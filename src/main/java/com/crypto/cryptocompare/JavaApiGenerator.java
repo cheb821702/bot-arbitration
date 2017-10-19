@@ -31,13 +31,10 @@ public class JavaApiGenerator {
     }
 
     private void parseRoot(JsonReader reader) throws IOException {
+        reader.beginObject();
         while (reader.hasNext()) {
             JsonToken jsonToken = reader.peek();
-            if (jsonToken == JsonToken.BEGIN_OBJECT) {
-                reader.beginObject();
-            } else if (jsonToken == JsonToken.END_OBJECT) {
-                reader.endObject();
-            } else if (jsonToken == JsonToken.NAME) {
+            if (jsonToken == JsonToken.NAME) {
                 String name = reader.nextName();
                 if ("Called".equals(name)) {
                     System.out.println(name + ":" + reader.nextString());
@@ -50,16 +47,14 @@ public class JavaApiGenerator {
                 reader.skipValue();
             }
         }
+        reader.endObject();
     }
 
     private void parseCalls(JsonReader reader) throws IOException {
+        reader.beginObject();
         while (reader.hasNext()) {
             JsonToken jsonToken = reader.peek();
-            if (jsonToken == JsonToken.BEGIN_OBJECT) {
-                reader.beginObject();
-            } else if (jsonToken == JsonToken.END_OBJECT) {
-                reader.endObject();
-            } else if (jsonToken == JsonToken.NAME) {
+            if (jsonToken == JsonToken.NAME) {
                 String name = reader.nextName();
                 if ("RateLimit".equals(name)) {
                     parseRateLimit(reader);
@@ -70,35 +65,66 @@ public class JavaApiGenerator {
                 reader.skipValue();
             }
         }
+        reader.endObject();
     }
 
     private void parseRateLimit(JsonReader reader) throws IOException {
+        reader.beginObject();
         while (reader.hasNext()) {
             JsonToken jsonToken = reader.peek();
-            if (jsonToken == JsonToken.BEGIN_OBJECT) {
-                reader.beginObject();
-            } else if (jsonToken == JsonToken.END_OBJECT) {
-                reader.endObject();
-            } else if (jsonToken == JsonToken.NAME) {
-                System.out.println(reader.nextName() + "->");
+            if (jsonToken == JsonToken.NAME) {
+                System.out.println(reader.nextName() + ":");
+                parseRateLimitUnit(reader);
             } else {
                 reader.skipValue();
             }
         }
+        reader.endObject();
     }
 
     private void parseService(JsonReader reader) throws IOException {
+        reader.beginObject();
         while (reader.hasNext()) {
             JsonToken jsonToken = reader.peek();
-            if (jsonToken == JsonToken.BEGIN_OBJECT) {
-                reader.beginObject();
-            } else if (jsonToken == JsonToken.END_OBJECT) {
-                reader.endObject();
-            } else if (jsonToken == JsonToken.NAME) {
-
+            if (jsonToken == JsonToken.NAME) {
+                System.out.println(reader.nextName() + ":");
+                parseServiceMethod(reader);
             } else {
                 reader.skipValue();
             }
         }
+        reader.endObject();
+    }
+
+    private void parseRateLimitUnit(JsonReader reader) throws IOException {
+        reader.beginObject();
+        while (reader.hasNext()) {
+            JsonToken jsonToken = reader.peek();
+            if (jsonToken == JsonToken.NAME) {
+                System.out.println("\t" + reader.nextName() + "->" + reader.nextString());
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+    }
+
+    private void parseServiceMethod(JsonReader reader) throws IOException {
+        reader.beginObject();
+        while (reader.hasNext()) {
+            JsonToken jsonToken = reader.peek();
+            if (jsonToken == JsonToken.NAME) {
+                String name = reader.nextName();
+                if ("Simple".equals(name)) {
+                    System.out.println("\t" + name + "->" + reader.nextString());
+                } else if ("Info".equals(name)) {
+                    System.out.println(name + ":");
+                    reader.skipValue();
+                }
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
     }
 }
