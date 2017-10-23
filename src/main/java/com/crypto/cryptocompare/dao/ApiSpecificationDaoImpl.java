@@ -1,26 +1,31 @@
-package com.crypto.cryptocompare;
+package com.crypto.cryptocompare.dao;
+
+import com.crypto.cryptocompare.model.ApiRequest;
+import com.crypto.cryptocompare.model.ApiResponse;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
+import static com.crypto.cryptocompare.ClientProperties.*;
 
-public class JavaApiGenerator {
+public class ApiSpecificationDaoImpl extends BaseDaoImpl<ApiRequest,ApiResponse> implements ApiSpecificationDao{
 
-    private ApiJsonProvider apiProvider = new ApiJsonProvider();
-
-    public static void main(String[] args) {
-        new JavaApiGenerator().testIt();
+    @Override
+    protected String getBaseUrl() {
+        return API_SPECIFICATION_URL;
     }
 
-    public void testIt() {
-        generateApiFromJSONSpecification(apiProvider.getSpecificationReader());
+    @Override
+    protected String convertToHttpParameters(ApiRequest request) {
+        return null;
     }
 
-    public void generateApiFromJSONSpecification(InputStreamReader textStream) {
-        if (textStream != null) {
-            JsonReader jsonReader = new JsonReader(textStream);
+    @Override
+    protected ApiResponse parseResponse(InputStreamReader reader) {
+        if (reader != null) {
+            JsonReader jsonReader = new JsonReader(reader);
             try {
                 parseRoot(jsonReader);
                 jsonReader.close();
@@ -28,6 +33,7 @@ public class JavaApiGenerator {
                 e.printStackTrace();
             }
         }
+        return null;
     }
 
     private void parseRoot(JsonReader reader) throws IOException {
