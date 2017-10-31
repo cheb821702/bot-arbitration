@@ -27,8 +27,10 @@ public class ApiSpecificationDaoImpl extends BaseDaoImpl<ApiRequest,ApiResponse>
         if (reader != null) {
             JsonReader jsonReader = new JsonReader(reader);
             try {
-                parseRoot(jsonReader);
+                ApiResponse response = new ApiResponse();
+                parseRoot(jsonReader, response);
                 jsonReader.close();
+                return response;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -36,19 +38,21 @@ public class ApiSpecificationDaoImpl extends BaseDaoImpl<ApiRequest,ApiResponse>
         return null;
     }
 
-    private void parseRoot(JsonReader reader) throws IOException {
+    private void parseRoot(JsonReader reader, ApiResponse response) throws IOException {
         reader.beginObject();
         while (reader.hasNext()) {
             JsonToken jsonToken = reader.peek();
             if (jsonToken == JsonToken.NAME) {
                 String name = reader.nextName();
-                if ("Called".equals(name)) {
-                    System.out.println(name + ":" + reader.nextString());
-                } else if ("Message".equals(name)) {
-                    System.out.println(name + ":" + reader.nextString());
-                } else if ("AvailableCalls".equals(name)) {
-                    parseCalls(reader);
+//                if ("Called".equals(name)) {
+//                    System.out.println(name + ":" + reader.nextString());
+//                } else
+                    if ("Message".equals(name)) {
+                    parseMessage(reader,response);
                 }
+//                else if ("AvailableCalls".equals(name)) {
+//                     parseCalls(reader);
+//                }
             } else {
                 reader.skipValue();
             }
@@ -56,81 +60,86 @@ public class ApiSpecificationDaoImpl extends BaseDaoImpl<ApiRequest,ApiResponse>
         reader.endObject();
     }
 
-    private void parseCalls(JsonReader reader) throws IOException {
-        reader.beginObject();
-        while (reader.hasNext()) {
-            JsonToken jsonToken = reader.peek();
-            if (jsonToken == JsonToken.NAME) {
-                String name = reader.nextName();
-                if ("RateLimit".equals(name)) {
-                    parseRateLimit(reader);
-                } else {
-                    parseService(reader);
-                }
-            } else {
-                reader.skipValue();
-            }
-        }
-        reader.endObject();
+    private void parseMessage(JsonReader reader, ApiResponse response) throws IOException {
+        String messagde = reader.nextString();
+        response.setPublicKey(messagde.substring(messagde.indexOf("is:")+3).trim());
     }
 
-    private void parseRateLimit(JsonReader reader) throws IOException {
-        reader.beginObject();
-        while (reader.hasNext()) {
-            JsonToken jsonToken = reader.peek();
-            if (jsonToken == JsonToken.NAME) {
-                System.out.println(reader.nextName() + ":");
-                parseRateLimitUnit(reader);
-            } else {
-                reader.skipValue();
-            }
-        }
-        reader.endObject();
-    }
-
-    private void parseService(JsonReader reader) throws IOException {
-        reader.beginObject();
-        while (reader.hasNext()) {
-            JsonToken jsonToken = reader.peek();
-            if (jsonToken == JsonToken.NAME) {
-                System.out.println(reader.nextName() + ":");
-                parseServiceMethod(reader);
-            } else {
-                reader.skipValue();
-            }
-        }
-        reader.endObject();
-    }
-
-    private void parseRateLimitUnit(JsonReader reader) throws IOException {
-        reader.beginObject();
-        while (reader.hasNext()) {
-            JsonToken jsonToken = reader.peek();
-            if (jsonToken == JsonToken.NAME) {
-                System.out.println("\t" + reader.nextName() + "->" + reader.nextString());
-            } else {
-                reader.skipValue();
-            }
-        }
-        reader.endObject();
-    }
-
-    private void parseServiceMethod(JsonReader reader) throws IOException {
-        reader.beginObject();
-        while (reader.hasNext()) {
-            JsonToken jsonToken = reader.peek();
-            if (jsonToken == JsonToken.NAME) {
-                String name = reader.nextName();
-                if ("Simple".equals(name)) {
-                    System.out.println("\t" + name + "->" + reader.nextString());
-                } else if ("Info".equals(name)) {
-                    System.out.println(name + ":");
-                    reader.skipValue();
-                }
-            } else {
-                reader.skipValue();
-            }
-        }
-        reader.endObject();
-    }
+//    private void parseCalls(JsonReader reader) throws IOException {
+//        reader.beginObject();
+//        while (reader.hasNext()) {
+//            JsonToken jsonToken = reader.peek();
+//            if (jsonToken == JsonToken.NAME) {
+//                String name = reader.nextName();
+//                if ("RateLimit".equals(name)) {
+//                    parseRateLimit(reader);
+//                } else {
+//                    parseService(reader);
+//                }
+//            } else {
+//                reader.skipValue();
+//            }
+//        }
+//        reader.endObject();
+//    }
+//
+//    private void parseRateLimit(JsonReader reader) throws IOException {
+//        reader.beginObject();
+//        while (reader.hasNext()) {
+//            JsonToken jsonToken = reader.peek();
+//            if (jsonToken == JsonToken.NAME) {
+//                System.out.println(reader.nextName() + ":");
+//                parseRateLimitUnit(reader);
+//            } else {
+//                reader.skipValue();
+//            }
+//        }
+//        reader.endObject();
+//    }
+//
+//    private void parseService(JsonReader reader) throws IOException {
+//        reader.beginObject();
+//        while (reader.hasNext()) {
+//            JsonToken jsonToken = reader.peek();
+//            if (jsonToken == JsonToken.NAME) {
+//                System.out.println(reader.nextName() + ":");
+//                parseServiceMethod(reader);
+//            } else {
+//                reader.skipValue();
+//            }
+//        }
+//        reader.endObject();
+//    }
+//
+//    private void parseRateLimitUnit(JsonReader reader) throws IOException {
+//        reader.beginObject();
+//        while (reader.hasNext()) {
+//            JsonToken jsonToken = reader.peek();
+//            if (jsonToken == JsonToken.NAME) {
+//                System.out.println("\t" + reader.nextName() + "->" + reader.nextString());
+//            } else {
+//                reader.skipValue();
+//            }
+//        }
+//        reader.endObject();
+//    }
+//
+//    private void parseServiceMethod(JsonReader reader) throws IOException {
+//        reader.beginObject();
+//        while (reader.hasNext()) {
+//            JsonToken jsonToken = reader.peek();
+//            if (jsonToken == JsonToken.NAME) {
+//                String name = reader.nextName();
+//                if ("Simple".equals(name)) {
+//                    System.out.println("\t" + name + "->" + reader.nextString());
+//                } else if ("Info".equals(name)) {
+//                    System.out.println(name + ":");
+//                    reader.skipValue();
+//                }
+//            } else {
+//                reader.skipValue();
+//            }
+//        }
+//        reader.endObject();
+//    }
 }
