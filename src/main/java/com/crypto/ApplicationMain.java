@@ -1,10 +1,5 @@
 package com.crypto;
 
-//import io.socket.IOAcknowledge;
-//import io.socket.IOCallback;
-//import io.socket.SocketIO;
-//import io.socket.SocketIOException;
-
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -33,69 +28,6 @@ public class ApplicationMain {
             e.printStackTrace();
         }
     }
-
-//    private  static void connectGottoxSocketIO() throws MalformedURLException {
-//        SocketIO socket = new SocketIO("https://streamer.cryptocompare.com/");
-//        socket.connect(new IOCallback() {
-//            @Override
-//            public void onMessage(JSONObject json, IOAcknowledge ack) {
-//                try {
-//                    System.out.println("Server said:" + json.toString(2));
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            public void onMessage(String data, IOAcknowledge ack) {
-//                System.out.println("Server said: " + data);
-//            }
-//
-//            @Override
-//            public void onError(SocketIOException socketIOException) {
-//                System.out.println("an Error occured");
-//                socketIOException.printStackTrace();
-//            }
-//
-//            @Override
-//            public void onDisconnect() {
-//                System.out.println("Connection terminated.");
-//            }
-//
-//            @Override
-//            public void onConnect() {
-//                System.out.println("Connection established");
-//                String params = "0~Poloniex~BTC~USD";
-//
-//                socket.emit("SubAdd", params);
-//
-//                (new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        try {
-//                            Thread.sleep(10000);
-//                            socket.emit("SubRemove", params);
-//                            socket.disconnect();
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                })).start();
-//            }
-//
-//            @Override
-//            public void on(String event, IOAcknowledge ack, Object... args) {
-//                System.out.println("Server triggered event '" + event + "'");
-//                if("m".equals(event)) {
-//                    if(args.length == 1) {
-//                        System.out.println(args[0]);
-//                    } else {
-//                        System.out.println("args = " + args.length);
-//                    }
-//                }
-//            }
-//        });
-//    }
 
     private static void connectWS() throws URISyntaxException, JSONException {
         JSONArray pairs = new JSONArray();
